@@ -5,171 +5,7 @@ using UnityEngine.AI;
 using static Unity.VisualScripting.Member;
 using static UnityEngine.GraphicsBuffer;
 
-// public class AIEnemy : MonoBehaviour
-// {
-//     public NavMeshAgent agent;
-//     public Transform player;
-//     public LayerMask whatIsGround, whatIsPlayer;
-//     public GameObject bullet;
-//     public Transform gunPoint;
-//     public GameObject muzzleFlash;
 
-//     private Vector3 walkPoint;
-//     public bool walkPointSet;
-//     float walkPointRange;
-//     float health;
-
-//     float timeBetweenAttacks;
-//     bool alreadyAttacked;
-
-//     float sightRange, attackRange;
-//     public bool playerInSightRange, playerInAttackRange, aboutToAttack;
-
-//     private float fireRate = 2f;
-//     private float nextTimeToFire = 0.0f;
-//     private float startInstructionTime = 10f;
-//     RaycastHit playerhit;
-
-//     // Start is called before the first frame update
-//     void Start()
-//     {
-//         walkPoint = new Vector3(0, -1, 0);
-//         walkPointRange = 6;
-//         timeBetweenAttacks = 1000f;
-//         sightRange = 15f;
-//         attackRange = 5f;
-//         walkPointSet = false;
-//         playerInSightRange = false;
-//         alreadyAttacked = false;
-//         playerInAttackRange = false;
-//         nextTimeToFire = Time.time + 1f / fireRate;
-//         agent.height = -1.0f;
-//         agent.baseOffset = 0f;
-//     }
-
-//     // Update is called once per frame
-//     void Update()
-//     {  
-//          if (!GetComponent<Enemy>().isDead && Time.time > startInstructionTime)
-//         {
-//             playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-//             playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
-
-
-
-//             if (!playerInAttackRange && !playerInSightRange)
-//             {
-//                 Patrolling();
-//             } else if (!playerInAttackRange && playerInSightRange)
-//             {
-//                 ChasePlayer();
-//             }
-//             else if (playerInAttackRange && playerInSightRange)
-//             {
-//                 if (Physics.Linecast(transform.position, player.transform.position, out playerhit))
-//                 {
-//                     if (playerhit.transform.tag == "Wall")
-//                     {
-//                         Debug.Log("I see the wall");
-//                         aboutToAttack = false;
-
-
-
-//                     } else
-//                     {
-
-//                         if (Time.time >= nextTimeToFire)
-//                         {
-//                             aboutToAttack = true; 
-//                             AttackPlayer();
-//                             nextTimeToFire = Time.time + fireRate;
-
-//                         }
-                    
-//                         Debug.Log("I dont' see the wall");
-//                     }
-//                 } else
-//                 {
-//                     aboutToAttack = false;
-//                 }   
-//             }
-//         }
-//         else if (GetComponent<Enemy>().isDead)
-//         {
-//             // make sure the soldier doesn't move after dying 
-//             Debug.Log("Dead");
-//             //keep the enemy in place
-//             // agent.SetDestination(transform.position);
-//         }
-        
-
-//     // //set y position to -1
-//     // transform.position = new Vector3(transform.position.x, -1, transform.position.z);
-
-//     }
-
-//     void Patrolling()
-//     {
-//         Debug.Log("Patrolling");
-//         if (!walkPointSet)
-//         {
-//             SearchWalkingPoint();
-
-//         }
-//         if (walkPointSet)
-//         {
-//             agent.SetDestination(walkPoint);
-//         }
-
-//         Vector3 distanceToWalkPoint = transform.position - walkPoint;
-//         if (distanceToWalkPoint.magnitude < 1f)
-//         {
-//             walkPointSet = false; 
-//         }
-
-//     }
-
-//     void SearchWalkingPoint()
-//     {
-//         float randomZ = Random.Range(-walkPointRange, walkPointRange);
-//         float randomX = Random.Range(-walkPointRange, walkPointRange);
-//         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-
-//         if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
-//         {
-//             walkPointSet = true; 
-//         } 
-//     }
-
-//     void ChasePlayer()
-//     {
-//         Debug.Log("Chasing");
-//         agent.SetDestination(player.position);
-
-//     }
-
-//     void AttackPlayer()
-//     {
-//         agent.SetDestination(transform.position);
-//         transform.LookAt(player);
-  
-//         Debug.Log("Attack");
-
-//         GameObject currentMuzzle = Instantiate(muzzleFlash, gunPoint.position, gunPoint.rotation);
-//         currentMuzzle.transform.parent = gunPoint;
-//         var bulletRotationVector = bullet.transform.rotation.eulerAngles;
-//         bulletRotationVector.y = -75f; 
-//         GameObject bulletObject2 = Instantiate(bullet, gunPoint.position, Quaternion.Euler(bulletRotationVector));
-//         bulletObject2.GetComponent<ProjectileController>().hitpoint = player.transform.position;
-
-//     }
-
-//     void ResetAttack()
-//     {
-//         alreadyAttacked = false;
-
-//     }
-// }
 
 public class AIEnemy : MonoBehaviour
 {
@@ -180,6 +16,7 @@ public class AIEnemy : MonoBehaviour
     public Transform gunPoint;
     public GameObject muzzleFlash;
     private bool isHit;
+    private bool isDead;
     private Vector3 walkPoint;
     public bool walkPointSet;
     float walkPointRange;
@@ -199,12 +36,12 @@ public class AIEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        walkPoint = new Vector3(0, -1, 0);
-        walkPointRange = 6;
+        // walkPoint = new Vector3(0, -1, 0);
+        // walkPointRange = 6;
         timeBetweenAttacks = 1000f;
         sightRange = 15f;
         attackRange = 5f;
-        walkPointSet = false;
+        // walkPointSet = false;
         playerInSightRange = false;
         alreadyAttacked = false;
         playerInAttackRange = false;
@@ -217,45 +54,44 @@ public class AIEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   isHit = GetComponent<Enemy>().isHit;
-         if (!GetComponent<Enemy>().isDead && Time.time > startInstructionTime)
+        isDead = GetComponent<Enemy>().isDead;
+        Debug.Log("Enemy says: Am I hit? " + isHit);
+         if (!isDead && Time.time > startInstructionTime)
         {
             // playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
             playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+            Debug.Log("Enemy says: Player in attack range: " + playerInAttackRange);
+            Debug.Log("Enemy says: Calling Rotating");
 
+            Rotating();
 
-
-            if (!playerInAttackRange)// && !playerInSightRange)
-            {
-                // Patrolling();
-                Rotating();
-            } 
-            // else if (!playerInAttackRange && playerInSightRange)
-            // {
-            //     ChasePlayer();
-            // }
-            else if (playerInAttackRange)
+            if (playerInAttackRange)
             {
                 aboutToAttack = true;
                 if (Physics.Linecast(transform.position, player.transform.position, out playerhit))
-                {
+                {   
                     if (playerhit.transform.tag != "Player")
                     {
-                        Debug.Log("I see the wall");
+                        Debug.Log("Enemy says: I see the wall");
                     } 
                     else
-                    {
+                    {   
                         if (Time.time >= nextTimeToFire)
                         {   
+                            Debug.Log("Enemy says: I see the player");
+
                             // aboutToAttack = true; 
                             if (!isHit)
                                 {
+
+                                Debug.Log("Enemy says: I'm not hit");
                                 AttackPlayer();
                                 nextTimeToFire = Time.time + fireRate;
                                 }
                             
                         }
                     
-                        Debug.Log("I dont' see the wall");
+                        Debug.Log("Enemy says: I dont' see the wall");
                     }
                 } 
                 // else
@@ -264,10 +100,10 @@ public class AIEnemy : MonoBehaviour
                 // }   
             }
         }
-        else if (GetComponent<Enemy>().isDead)
+        else if (isDead)
         {
             // make sure the soldier doesn't move after dying 
-            Debug.Log("Dead");
+            Debug.Log("Enemy says: Dead");
             //keep the enemy in place
             // agent.SetDestination(transform.position);
         }
@@ -278,56 +114,27 @@ public class AIEnemy : MonoBehaviour
 
     }
 
-    void Patrolling()
-    {
-        Debug.Log("Patrolling");
-        if (!walkPointSet)
-        {
-            SearchWalkingPoint();
-
-        }
-        if (walkPointSet)
-        {
-            agent.SetDestination(walkPoint);
-        }
-
-        Vector3 distanceToWalkPoint = transform.position - walkPoint;
-        if (distanceToWalkPoint.magnitude < 1f)
-        {
-            walkPointSet = false; 
-        }
-
-    }
+   
 
     void Rotating(){
-
-    }
-
-    void SearchWalkingPoint()
-    {
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
+        if (!isDead)
         {
-            walkPointSet = true; 
-        } 
-    }
-
-    void ChasePlayer()
-    {
-        Debug.Log("Chasing");
-        agent.SetDestination(player.position);
+            Debug.Log("Enemy says: Rotating");
+        transform.LookAt(player);
+        }
+        else
+        {
+            Debug.Log("Enemy says: Rot: Dead or bug");
+        }
+        //make the enemy upright
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 
     }
 
     void AttackPlayer()
     {
-        agent.SetDestination(transform.position);
-        transform.LookAt(player);
-  
-        Debug.Log("Attack");
+        Rotating();
+        Debug.Log("Enemy says: Attack");
 
         GameObject currentMuzzle = Instantiate(muzzleFlash, gunPoint.position, gunPoint.rotation);
         currentMuzzle.transform.parent = gunPoint;
@@ -343,4 +150,8 @@ public class AIEnemy : MonoBehaviour
         alreadyAttacked = false;
 
     }
+
+
 }
+
+
