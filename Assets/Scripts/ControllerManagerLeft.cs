@@ -33,6 +33,7 @@ public class ControllerManagerLeft : MonoBehaviour
     public LineRenderer lineRenderer;
     public AudioSource gunshotSound;
     public AudioClip gunshotSoundClip;
+    public GameObject enemy;
     private float startInstructionTime = 10f;
     public int playerHealth;
     public Transform gunPoint; 
@@ -59,7 +60,8 @@ public class ControllerManagerLeft : MonoBehaviour
     }
 
     void Update()
-    {
+    {   SetCountText(timeRemaining);
+
         if (Time.time < startInstructionTime)
         {
             startInstructions.SetActive(true);
@@ -83,6 +85,7 @@ public class ControllerManagerLeft : MonoBehaviour
                             gunshotSound.Play();
                             VibrationManager.singleton.TriggerVibration(gunshotSoundClip, OVRInput.Controller.LTouch);
                             bulletCount -= 1; 
+                            
                         }
 
                 }
@@ -116,8 +119,21 @@ public class ControllerManagerLeft : MonoBehaviour
 
         }
 
+    if (enemy != null)
+    {
+        if (enemy.GetComponent<Enemy>().isHit)
+        {
+            // wait for 1 second and toggle the isHit variable back to false
+            StartCoroutine(WaitAndToggle(1.15f));
+
+        }
+    }
+    
+
         
     }
+
+
    
     void SetCountText(float timeToDisplay)
     {
@@ -126,8 +142,6 @@ public class ControllerManagerLeft : MonoBehaviour
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         timerText.text = "Timer: " + string.Format("{0:00}:{1:00}", minutes, seconds) + " Health: " + playerHealth.ToString();
         leftGunScoreText.text = bulletCount.ToString();
-
-
     }
 
     // private void ApplyForce(Rigidbody body, Vector3 endPosition)
@@ -156,7 +170,7 @@ public class ControllerManagerLeft : MonoBehaviour
            
             if (selectedObject.GetComponent<Enemy>() && !hitOnce)
 
-            {
+            {   enemy = selectedObject;
                 // GameObject bulletObject = (GameObject)Instantiate(bullet, gun.localPosition, gun.rotation);
                 // bulletObject.GetComponent<ProjectileController>().hitpoint = hit.point; 
                 
@@ -169,6 +183,7 @@ public class ControllerManagerLeft : MonoBehaviour
                 else
                 {
                     enemyHealth = enemyHealth - 10;
+                    selectedObject.GetComponent<Enemy>().isHit = !selectedObject.GetComponent<Enemy>().isHit;
                 }
                 selectedObject.GetComponent<Enemy>().health = enemyHealth;
                 hitOnce = true;
@@ -188,6 +203,13 @@ public class ControllerManagerLeft : MonoBehaviour
             lineRenderer.enabled = false;
         }
         
+    }
+
+    
+    IEnumerator WaitAndToggle(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        selectedObject.GetComponent<Enemy>().isHit = false;
     }
 
     float GetTriggerPress() 

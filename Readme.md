@@ -72,3 +72,8 @@
 
 **May 12**: Ahmed Attia
 Merged mine and Sanjali's changes
+
+**May 14** Ahmed Attia
+- Fixed a bug where the soldier would start and stop the shooting animation
+- Added a hit state and animation 
+- Fixed the loop break in the hostage animation

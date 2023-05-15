@@ -179,7 +179,7 @@ public class AIEnemy : MonoBehaviour
     public GameObject bullet;
     public Transform gunPoint;
     public GameObject muzzleFlash;
-
+    private bool isHit;
     private Vector3 walkPoint;
     public bool walkPointSet;
     float walkPointRange;
@@ -211,11 +211,12 @@ public class AIEnemy : MonoBehaviour
         nextTimeToFire = Time.time + 1f / fireRate;
         agent.height = -1.0f;
         agent.baseOffset = 0f;
+        
     }
 
     // Update is called once per frame
     void Update()
-    {  
+    {   isHit = GetComponent<Enemy>().isHit;
          if (!GetComponent<Enemy>().isDead && Time.time > startInstructionTime)
         {
             // playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
@@ -244,10 +245,14 @@ public class AIEnemy : MonoBehaviour
                     else
                     {
                         if (Time.time >= nextTimeToFire)
-                        {
+                        {   
                             // aboutToAttack = true; 
-                            AttackPlayer();
-                            nextTimeToFire = Time.time + fireRate;
+                            if (!isHit)
+                                {
+                                AttackPlayer();
+                                nextTimeToFire = Time.time + fireRate;
+                                }
+                            
                         }
                     
                         Debug.Log("I dont' see the wall");

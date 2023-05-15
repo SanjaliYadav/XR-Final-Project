@@ -98,7 +98,7 @@ public class EnemyAnimationStateController : MonoBehaviour
 {   
     // Start is called before the first frame update
     private Animator animator;
-    public bool playerInAttackRange, playerInSightRange, isDead, walkPointSet, aboutToAttack;
+    public bool playerInAttackRange, playerInSightRange, isDead, walkPointSet, aboutToAttack, isHit;
     private bool stopAnimation;
     private float startInstructionTime = 10f; 
 
@@ -118,6 +118,7 @@ public class EnemyAnimationStateController : MonoBehaviour
             // playerInSightRange = GetComponent<AIEnemy>().playerInSightRange;
             aboutToAttack = GetComponent<AIEnemy>().aboutToAttack;
             isDead = GetComponent<Enemy>().isDead;
+            isHit = GetComponent<Enemy>().isHit;
             // walkPointSet = GetComponent<AIEnemy>().walkPointSet;
             if (stopAnimation)
             {
@@ -132,7 +133,18 @@ public class EnemyAnimationStateController : MonoBehaviour
                 animator.SetBool("isPatrol", false);
                 animator.SetBool("isDead", true);
                 animator.SetBool("isStand", false);
+                animator.SetBool("isHit", false);
+                
                 stopAnimation = true;
+            }
+            else if (isHit)
+            {
+                animator.SetBool("isHit", true);
+                animator.SetBool("isChase", false);
+                animator.SetBool("isShooting", false);
+                animator.SetBool("isPatrol", false);
+                animator.SetBool("isDead", false);
+                animator.SetBool("isStand", false);
             }
             // else if (!playerInAttackRange && playerInSightRange)
             // {
@@ -149,6 +161,8 @@ public class EnemyAnimationStateController : MonoBehaviour
                 animator.SetBool("isPatrol", false);
                 animator.SetBool("isDead", false);
                 animator.SetBool("isStand", false);
+                animator.SetBool("isHit", false);
+
             }
             // else if (!playerInAttackRange && !playerInSightRange)
             // {
@@ -168,9 +182,13 @@ public class EnemyAnimationStateController : MonoBehaviour
             //     }
             // } 
             else
-            {
+            {   
                 animator.SetBool("isPatrol", false);
                 animator.SetBool("isStand", true);
+                animator.SetBool("isChase", false);
+                animator.SetBool("isShooting", false);
+                animator.SetBool("isDead", false);
+                animator.SetBool("isHit", false);
             }
 
         }
