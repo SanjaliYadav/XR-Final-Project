@@ -179,6 +179,12 @@ public class ControllerManagerLeft : MonoBehaviour
                 {
                     enemyHealth = 0;
                     selectedObject.GetComponent<Enemy>().isDead = true;
+                    //disable the collider of the selectedObject
+                    selectedObject.GetComponent<Collider>().enabled = false;
+                    //disable the rigidbody of the selectedObject
+                    selectedObject.GetComponent<Rigidbody>().isKinematic = true;
+                    //disable the Nav Mesh Agent of the selectedObject
+                    selectedObject.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
                 }
                 else
                 {
