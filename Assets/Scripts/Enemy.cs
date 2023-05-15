@@ -11,9 +11,6 @@ public class Enemy : MonoBehaviour
     public bool isHit;
     private TextMeshProUGUI healthText;
     public GameObject healthGO;
-    private Vector3 deathPosition;
-    private Quaternion deathRotation;
-    private GameObject soldier;
     private float delay = 0.433f;
     private float time = 0f;
     void Start()
@@ -23,8 +20,6 @@ public class Enemy : MonoBehaviour
         healthText = healthGO.GetComponent<TextMeshProUGUI>();
         healthText.rectTransform.position = transform.position + transform.forward * 0.5f + transform.up * 2;
         healthText.text = health.ToString();
-        //set soldier to the gameobject attacted to this script
-        soldier = gameObject;
 
     }
 
@@ -38,8 +33,6 @@ public class Enemy : MonoBehaviour
             {
                 // Destroy(gameObject, 1.5f);
                 isDead = true;
-                deathPosition = transform.position;
-                deathRotation = transform.rotation;
                 this.gameObject.SetActive(false);
             }
             healthText.text = health.ToString();
@@ -47,12 +40,6 @@ public class Enemy : MonoBehaviour
         } else
         {   
             healthGO.SetActive(false);
-            // disable the collider
-            GetComponent<Collider>().enabled = false;
-            // assert that the enemy is not moving
-            transform.position = deathPosition;
-            transform.rotation = deathRotation;
-            
 
 
             
